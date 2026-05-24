@@ -21,8 +21,8 @@ This document outlines the requirements and specifications for setting up global
 
 ## 3. Core Functional Requirements
 
-### 3.1. Zero-Friction, Deterministic Project Initialization
-Project initialization must favor extreme velocity and determinism.
+### 3.1. Phase 0: Zero-Friction Project Initialization
+Project initialization must favor extreme velocity and determinism. It MUST occur at Phase 0, before the PRD is drafted, to ensure all architectural provenance is tracked.
 1. **Trigger**: User asks Antigravity to "start a new project".
 2. **Instant Setup**: Antigravity skips the confirmation prompt. It immediately creates a subdirectory in `$ANTIGRAVITY_WORKSPACE` (default: `${AG_WORKSPACE}`).
 3. **Path Jail & Collision Protection**: Antigravity is explicitly forbidden from path traversal (`../`). Path resolution must use canonicalized absolute paths to strictly enforce the jail. If the directory exists, it must safely abort.
@@ -42,6 +42,7 @@ To maintain velocity without drowning the context window, Antigravity must orche
 - **Execution Receipts**: At the end of every project or major task, the AI must copy the `implementation_plan.md` (Design), `task.md` (Execution Log), and `walkthrough.md` (Summary) artifacts into the target project's Git repository to serve as a permanent historical receipt.
 - **Parallel Subagent Spawning**: For multi-component tasks (e.g., building a frontend and an API), Antigravity must leverage `invoke_subagent` to spawn specialized execution agents (e.g., Frontend SWE, Database Admin) in parallel.
 - **TPM Oversight**: The primary agent must monitor the subagents' progress against strict `task.md` checklists and synthesize their outputs safely into the main branch.
+- **Automated Milestone Commits**: The primary agent MUST automatically execute semantic git commits at the end of Phase 1 (PRD Approval) and Phase 2 (TDD Approval) to preserve architectural history without polluting the git log with brainstorming drafts.
 
 ### 3.3. Cross-Project Continuous Learning & Skill Extraction
 Skill abstraction must never interrupt the user's flow or rely on privacy-violating background surveillance.

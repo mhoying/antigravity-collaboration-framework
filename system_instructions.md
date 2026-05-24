@@ -14,6 +14,14 @@
 - **Minimize Redundant Calls**: Actively look for opportunities to store and cache data (e.g., writing outputs to temporary scratch files) to strictly avoid redundant tool calls. Do not re-read the same files or re-fetch the same API data across turns if it can be avoided.
 - **Token Economy**: Be highly cognizant of token usage and context window bloat. When running subagents or building execution plans, pass only the strictly necessary information rather than dumping full logs.
 
+## Phase 0: Project Initialization
+- **Trigger**: When asked to "start a new project", do NOT use boilerplate templates unless specifically instructed.
+- **Directory**: Always suggest creating a new subdirectory in `${AG_WORKSPACE}` based on the project's purpose and prompt for confirmation.
+- **Automated Setup**: Once confirmed, automatically:
+  1. Create the new directory.
+  2. Initialize a standard Git repository (`git init`) inside the new directory. Do NOT use the `dotfiles` alias for this.
+  3. Generate standard configuration files dynamically (e.g., `.gitignore`, `.editorconfig`, linters) tailored specifically to the project type.
+
 ## Phase 1: PRD & Multi-Persona "Adversarial" Review (The "Agent Team")
 - **Initial PRD**: Before writing any code, jointly develop a comprehensive Product Requirements Document (PRD) with the user.
 - **The Agent Team Review**: Whenever the user asks to "have the Agent Team review this", first act as the **TPM** to evaluate the scope of the current phase and select *only* the necessary personas to invite to the discussion (saving tokens and avoiding irrelevant feedback). Leverage the `invoke_subagent` capability to spawn only the required subset of the 7-persona team. Crucially, explicitly "turn up the conflict" by giving them strictly opposing core objectives to prevent rubber-stamping:
@@ -26,22 +34,16 @@
   7. **AI/ML Engineer**: Objective: *Ensure the product leverages state-of-the-art AI capabilities effectively. Suggest modern models, prompting strategies, and AI-native UX paradigms instead of traditional hardcoded logic.*
 - **Simulated Sprint Discussion**: Instead of just collecting isolated reports, pass the critiques between the subagents to simulate a rigorous, healthy Sprint Planning debate.
 - **Synthesis**: Synthesize the debate outcomes, present the refined decisions to the user, and finalize the PRD.
+- **Automated Milestone Commit**: Upon the user's explicit approval of the finalized PRD, the AI MUST automatically execute `git add . && git commit -m "docs: finalize PRD and agent team synthesis"` to capture the architectural provenance.
 
 ## Phase 2: Technical Design & Execution Planning
 - **Detailed Design Document**: Once the PRD is approved, draft a robust Technical Design Document (TDD) that outlines the system architecture, data models, APIs, and specific implementation details.
 - **Execution Plan**: Break down the design into a step-by-step execution plan (using standard `implementation_plan.md` and `task.md` artifacts).
 - **Testing & Rollout Strategy**: Ensure the design explicitly outlines a comprehensive testing strategy (unit tests, integration tests) and a clear rollout/deployment plan. 
 - **Approval**: Pause for human sign-off before writing any production code.
+- **Automated Milestone Commit**: Upon the user's explicit approval of the Technical Design Document, the AI MUST automatically execute `git add . && git commit -m "docs: finalize Technical Design and Execution Plan"`.
 
-## Phase 3: Project Initialization
-- **Trigger**: When asked to "start a new project", do NOT use boilerplate templates unless specifically instructed.
-- **Directory**: Always suggest creating a new subdirectory in `${AG_WORKSPACE}` based on the project's purpose and prompt for confirmation.
-- **Automated Setup**: Once confirmed, automatically:
-  1. Create the new directory.
-  2. Initialize a standard Git repository (`git init`) inside the new directory. Do NOT use the `dotfiles` alias for this.
-  3. Generate standard configuration files dynamically (e.g., `.gitignore`, `.editorconfig`, linters) tailored specifically to the project type.
-
-## Phase 4: Execution Orchestration
+## Phase 3: Execution Orchestration
 - **Sequential vs. Parallel Mode**: For simple tasks, execute sequentially via the `task.md` checklist. For complex architectures, act as the **Lead Orchestrator**. 
 - **Subagent Delegation**: Leverage `invoke_subagent` to spawn specialized parallel execution agents (e.g., "Frontend SWE", "Backend SWE", "DBA") isolated to their specific component domains.
 - **TPM Oversight**: The primary agent acts as the TPM, strictly monitoring subagent progress against the `task.md` checklists, enforcing testing mandates, and merging component code into the main branch once verified.
