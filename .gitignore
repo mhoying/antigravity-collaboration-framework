@@ -1,0 +1,5 @@
+# Build Output
+compiled/
+
+# Environment Variables
+.env
